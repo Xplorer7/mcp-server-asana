@@ -463,7 +463,7 @@ Ein weiteres Beispiel:
 
 3. **Installation** (lokaler Build aus diesem Fork):
 
-   Voraussetzung: Repo ist geklont und `npm ci && npm run build` wurde ausgeführt — `dist/index.js` existiert.
+   Voraussetzung: Repo ist geklont und `npm ci` wurde ausgeführt (der `prepare`-Hook baut dabei automatisch `dist/index.js`).
 
    ### Für Claude Code:
 
@@ -471,7 +471,11 @@ Ein weiteres Beispiel:
    claude mcp add asana-custom --scope user -- node "<absoluter-pfad-zum-geklonten-repo>/dist/index.js"
    ```
 
-   `ASANA_ACCESS_TOKEN` wird aus der Windows-User-Umgebungsvariable vererbt — alternativ explizit per `-e ASANA_ACCESS_TOKEN=<TOKEN>` übergeben.
+   `ASANA_ACCESS_TOKEN` wird aus der Windows-User-Umgebungsvariable vererbt. Alternativ den Token explizit im Befehl übergeben:
+
+   ```powershell
+   claude mcp add asana-custom --scope user -e ASANA_ACCESS_TOKEN=<TOKEN> -- node "<absoluter-pfad-zum-geklonten-repo>/dist/index.js"
+   ```
 
    ### Für Claude Desktop:
 
