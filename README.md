@@ -463,43 +463,34 @@ Another example:
      - https://app.asana.com/0/my-apps
    - More details here: https://developers.asana.com/docs/personal-access-token
 
-3. **Installation Options**:
+3. **Installation Options** (lokaler Build aus diesem Fork):
+
+   Voraussetzung: Repo ist geklont und `npm ci && npm run build` wurde ausgeführt — `dist/index.js` existiert.
+
+   ### For Claude Code:
+
+   ```powershell
+   claude mcp add asana-custom --scope user -- node "C:/Users/7660/source/repos/mcp-server-asana/dist/index.js"
+   ```
+
+   `ASANA_ACCESS_TOKEN` wird aus der Windows-User-Umgebungsvariable vererbt — alternativ explizit per `-e ASANA_ACCESS_TOKEN=<TOKEN>` übergeben.
 
    ### For Claude Desktop:
+
    Add the following to your `claude_desktop_config.json`:
 
    ```json
    {
      "mcpServers": {
-       "asana": {
-         "command": "npx",
-         "args": ["-y", "@roychri/mcp-server-asana"],
-         "env": {
-           "ASANA_ACCESS_TOKEN": "your-asana-access-token"
-         }
+       "asana-custom": {
+         "command": "node",
+         "args": ["C:/Users/7660/source/repos/mcp-server-asana/dist/index.js"]
        }
      }
    }
    ```
-   
-   ### For Claude Code:
-   
-   Use the following command to install and configure the MCP server:
-   
-   ```bash
-   claude mcp add asana -e ASANA_ACCESS_TOKEN=<TOKEN> -- npx -y @roychri/mcp-server-asana
-   ```
-   
-   Replace `<TOKEN>` with your Asana access token.
 
-If you want to install the beta version (not yet released), you can use:
-
-* `@roychri/mcp-server-asana@beta`
-
-You can find the current beta release, if any, with either:
-
-1. https://www.npmjs.com/package/@roychri/mcp-server-asana?activeTab=versions
-2. `npm dist-tag ls @roychri/mcp-server-asana`
+   `ASANA_ACCESS_TOKEN` muss als Windows-User-Umgebungsvariable gesetzt sein, damit Claude Desktop sie an den MCP-Prozess vererben kann.
 
 ## Troubleshooting
 
@@ -512,22 +503,6 @@ If you encounter permission errors:
 ## Contributing
 
 Clone this repo and start hacking.
-
-### Test it locally with the MCP Inspector
-
-If you want to test your changes, you can use the MCP Inspector like this:
-
-```bash
-npm run inspector
-```
-
-This will expose the client to port `5173` and server to port `3000`.
-
-If those ports are already used by something else, you can use:
-
-```bash
-CLIENT_PORT=5009 SERVER_PORT=3009 npm run inspector
-```
 
 ## License
 
