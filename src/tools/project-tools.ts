@@ -185,6 +185,10 @@ export const updateProjectTool: Tool = {
         type: "string",
         description: "Privacy setting: public_to_workspace, private_to_team, private"
       },
+      custom_fields: {
+        type: "object",
+        description: "Object mapping custom field GID strings to their values. For text fields use a string, for number fields a number, for enum fields the enum option GID. Example: { \"1212279036144756\": \"[ELDIMKO-F01]\" }"
+      },
       opt_fields: {
         type: "string",
         description: "Comma-separated list of optional fields to include"
