@@ -197,3 +197,75 @@ export const updateProjectTool: Tool = {
     required: ["project_id"]
   }
 };
+
+export const getCustomFieldSettingsForProjectTool: Tool = {
+  name: "asana_get_custom_field_settings_for_project",
+  description: "Get all custom field settings for a project — i.e. which custom fields are attached to the project and whether they are marked as important.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      project_gid: {
+        type: "string",
+        description: "The project GID"
+      },
+      opt_fields: {
+        type: "string",
+        description: "Comma-separated list of optional fields. Useful: 'custom_field,custom_field.name,custom_field.resource_subtype,custom_field.enum_options,is_important'"
+      }
+    },
+    required: ["project_gid"]
+  }
+};
+
+export const addCustomFieldSettingForProjectTool: Tool = {
+  name: "asana_add_custom_field_setting_for_project",
+  description: "Attach an existing custom field to a project. Optionally mark it as important (shown in the project header).",
+  inputSchema: {
+    type: "object",
+    properties: {
+      project_gid: {
+        type: "string",
+        description: "The project GID"
+      },
+      custom_field: {
+        type: "string",
+        description: "GID of the custom field to attach"
+      },
+      is_important: {
+        type: "boolean",
+        description: "If true, the field is highlighted in the project view"
+      },
+      opt_fields: {
+        type: "string",
+        description: "Comma-separated list of optional fields to include in the response"
+      }
+    },
+    required: ["project_gid", "custom_field"]
+  }
+};
+
+export const removeCustomFieldSettingForProjectTool: Tool = {
+  name: "asana_remove_custom_field_setting_for_project",
+  description: "DESTRUCTIVE: Detach a custom field from a project. Values that were already set on tasks in the project remain, but the field is no longer editable there. Requires confirm=true.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      project_gid: {
+        type: "string",
+        description: "The project GID"
+      },
+      custom_field: {
+        type: "string",
+        description: "GID of the custom field to detach"
+      },
+      confirm: {
+        type: "boolean",
+        description: "Must be explicitly true. Without this flag, the call is rejected with an explanation."
+      }
+    },
+    required: ["project_gid", "custom_field", "confirm"]
+  },
+  annotations: {
+    destructiveHint: true
+  }
+};
