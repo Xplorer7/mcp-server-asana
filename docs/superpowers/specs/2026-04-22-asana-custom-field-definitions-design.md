@@ -93,7 +93,10 @@ Test-Framework.
 - `color` (string, optional) — Asana-Farben: `red`, `orange`, `yellow-orange`,
   `yellow`, `yellow-green`, `green`, `blue-green`, `aqua`, `blue`, `indigo`,
   `purple`, `magenta`, `hot-pink`, `pink`, `cool-gray`
-- `insert_before_gid` / `insert_after_gid` (optional) — Positionierung
+- `enabled` (boolean, optional)
+- `insert_before` / `insert_after` (string, optional) — GID einer bestehenden
+  Enum-Option, um die neue Option davor/dahinter einzusortieren (die
+  Parameternamen entsprechen 1:1 dem Asana-API-Request-Body)
 
 ### `asana_update_enum_option`
 - `enum_option_gid` (string, required)
@@ -101,8 +104,9 @@ Test-Framework.
 
 ### `asana_insert_enum_option`
 - `custom_field_gid` (string, required)
-- `enum_option_gid` (string, required)
-- `before_enum_option_gid` **oder** `after_enum_option_gid` (genau einer)
+- `enum_option` (string, required) — GID der zu verschiebenden Option
+- `before_enum_option` **oder** `after_enum_option` (string, required) — GID
+  der Referenz-Option (Parameternamen entsprechen 1:1 dem Asana-API-Body)
 
 ### `asana_add_custom_field_setting_for_project`
 - `project_gid` (string, required)
@@ -176,7 +180,7 @@ Drei Fehlerklassen, eingefügt in das bestehende outer `try/catch` in
   `"Destruktive Operation. {Beschreibung}. Zum Ausführen nochmals mit confirm=true aufrufen."`
 - `create_custom_field` mit ungültigem `resource_subtype` →
   `"resource_subtype muss einer der folgenden sein: text, number, enum, multi_enum, date, people"`
-- `insert_enum_option` mit weder `before_` noch `after_enum_option_gid` →
+- `insert_enum_option` ohne `before_enum_option` und ohne `after_enum_option` →
   entsprechende Fehlermeldung
 
 **Asana-API-Fehler:** Unverändert durchgereicht. Typisch: `403` bei gesperrten
@@ -268,8 +272,8 @@ mcp_call asana_create_enum_option '{
 mcp_call asana_update_enum_option '{"enum_option_gid":"'$OPT_GID'","name":"Mittelhoch"}'
 mcp_call asana_insert_enum_option '{
   "custom_field_gid":"'$FIELD_GID'",
-  "enum_option_gid":"'$OPT_GID'",
-  "before_enum_option_gid":"'$HOCH_GID'"
+  "enum_option":"'$OPT_GID'",
+  "before_enum_option":"'$HOCH_GID'"
 }'
 
 # 5) Settings-Zyklus gegen das Test-Projekt
