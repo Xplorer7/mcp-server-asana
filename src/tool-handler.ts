@@ -776,6 +776,49 @@ export function tool_handler(asanaClient: AsanaClientWrapper): (request: CallToo
           };
         }
 
+        // ===== Enum-Optionen =====
+
+        case "asana_create_enum_option": {
+          const { custom_field_gid, opt_fields, ...data } = args;
+          const response = await asanaClient.createEnumOption(
+            custom_field_gid,
+            data,
+            opt_fields ? { opt_fields } : {}
+          );
+          return {
+            content: [{ type: "text", text: JSON.stringify(response) }],
+          };
+        }
+
+        case "asana_update_enum_option": {
+          const { enum_option_gid, opt_fields, ...data } = args;
+          const response = await asanaClient.updateEnumOption(
+            enum_option_gid,
+            data,
+            opt_fields ? { opt_fields } : {}
+          );
+          return {
+            content: [{ type: "text", text: JSON.stringify(response) }],
+          };
+        }
+
+        case "asana_insert_enum_option": {
+          const { custom_field_gid, opt_fields, ...data } = args;
+          if (!data.before_enum_option && !data.after_enum_option) {
+            throw new Error(
+              "asana_insert_enum_option requires either before_enum_option or after_enum_option."
+            );
+          }
+          const response = await asanaClient.insertEnumOption(
+            custom_field_gid,
+            data,
+            opt_fields ? { opt_fields } : {}
+          );
+          return {
+            content: [{ type: "text", text: JSON.stringify(response) }],
+          };
+        }
+
         default:
           throw new Error(`Unknown tool: ${request.params.name}`);
       }
