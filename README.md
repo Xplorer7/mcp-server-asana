@@ -389,6 +389,106 @@ Ein weiteres Beispiel:
         * opt_fields (string): Kommagetrennte Liste optionaler Felder
         * completed_since (string): Nur Tasks, die seit diesem Zeitpunkt erledigt wurden (ISO 8601). 'now' liefert ausschließlich offene Tasks.
     * Liefert: Liste der Tasks aus der My-Tasks-Liste des Users
+42. `asana_list_custom_fields_for_workspace`
+    * Listet alle Custom-Field-Definitionen eines Workspaces (Kompakt-Darstellung).
+    * Pflichtparameter:
+        * workspace (string): Workspace-GID
+    * Optionale Parameter:
+        * limit (number): Ergebnisse pro Seite (1–100)
+        * offset (string): Pagination-Offset-Token
+        * opt_fields (string): Kommagetrennte Liste optionaler Felder (z. B. `name,resource_subtype,enabled,is_global_to_workspace,is_formula_field,enum_options`)
+    * Liefert: Array mit Custom-Field-Objekten
+43. `asana_get_custom_field`
+    * Lädt die vollständige Definition eines Custom Fields (inklusive Typ, Enum-Options, `is_formula_field`, Precision, Format).
+    * Pflichtparameter:
+        * custom_field_gid (string): GID des Custom Fields
+    * Optionale Parameter:
+        * opt_fields (string): Zusätzliche Felder, etwa `enum_options,enum_options.name,enum_options.color,enum_options.enabled,is_formula_field,representation_type,precision,format`
+    * Liefert: Custom-Field-Objekt
+44. `asana_create_custom_field`
+    * Legt ein neues Custom Field in einem Workspace an. Hinweis: `resource_subtype` kann nachträglich nicht geändert werden. Formel-Felder sind nur über die Asana-Web-Oberfläche erstellbar, nicht per API.
+    * Pflichtparameter:
+        * workspace (string): Workspace-GID
+        * name (string): Feldname (muss im Workspace eindeutig sein)
+        * resource_subtype (string): Einer von `text`, `number`, `enum`, `multi_enum`, `date`, `people`
+    * Optionale Parameter:
+        * description (string): Feldbeschreibung
+        * precision (integer): Dezimalstellen 0–6 (nur für `number`)
+        * format (string): Zahlenformat, nur für `number`: `currency`, `percentage`, `duration`, `custom`, `none`
+        * enum_options (array): Anfangs-Optionen für Enum-Felder, Elemente `{ name, color?, enabled? }`
+        * is_global_to_workspace (boolean): Im gesamten Workspace verfügbar (Default `false`, erfordert Admin-Rechte)
+        * opt_fields (string): Kommagetrennte Liste optionaler Felder
+    * Liefert: Angelegtes Custom-Field-Objekt
+45. `asana_update_custom_field`
+    * Aktualisiert Name, Beschreibung oder Enabled-Status eines Custom Fields. `resource_subtype` ist nicht änderbar. Enum-Optionen müssen separat über `asana_create_enum_option` / `asana_update_enum_option` gepflegt werden.
+    * Pflichtparameter:
+        * custom_field_gid (string): GID des Custom Fields
+    * Optionale Parameter:
+        * name (string): Neuer Feldname
+        * description (string): Neue Feldbeschreibung
+        * enabled (boolean): Feld aktivieren oder deaktivieren
+        * opt_fields (string): Kommagetrennte Liste optionaler Felder
+    * Liefert: Aktualisiertes Custom-Field-Objekt
+46. `asana_delete_custom_field`
+    * **Destruktiv.** Löscht die Custom-Field-Definition aus dem Workspace. Das Feld wird aus allen Projekten und Tasks, die es verwenden, entfernt. Erfordert `confirm: true`.
+    * Pflichtparameter:
+        * custom_field_gid (string): GID des Custom Fields
+        * confirm (boolean): Muss `true` sein
+    * Liefert: Leeres Data-Objekt bei Erfolg
+47. `asana_create_enum_option`
+    * Fügt einem Enum- oder Multi-Enum-Feld eine neue Option hinzu. Standardmäßig am Ende der Optionsliste. Pro Feld sind maximal 500 Optionen erlaubt (inkl. deaktivierter).
+    * Pflichtparameter:
+        * custom_field_gid (string): GID eines Enum-/Multi-Enum-Felds
+        * name (string): Anzeigename der Option
+    * Optionale Parameter:
+        * color (string): Einer von `red`, `orange`, `yellow-orange`, `yellow`, `yellow-green`, `green`, `blue-green`, `aqua`, `blue`, `indigo`, `purple`, `magenta`, `hot-pink`, `pink`, `cool-gray`
+        * enabled (boolean): Option aktivieren (Default `true`)
+        * insert_before (string): GID einer bestehenden Option, davor einsortieren
+        * insert_after (string): GID einer bestehenden Option, dahinter einsortieren
+        * opt_fields (string): Kommagetrennte Liste optionaler Felder
+    * Liefert: Angelegtes Enum-Option-Objekt
+48. `asana_update_enum_option`
+    * Aktualisiert Name, Farbe oder Enabled-Status einer Enum-Option. Enum-Optionen können per API nicht gelöscht werden — zum Entfernen `enabled: false` setzen. Ein Enum-Feld benötigt mindestens eine aktivierte Option.
+    * Pflichtparameter:
+        * enum_option_gid (string): GID der Enum-Option
+    * Optionale Parameter:
+        * name (string): Neuer Anzeigename
+        * color (string): Neue Farbe (siehe `asana_create_enum_option`)
+        * enabled (boolean): Option aktivieren oder deaktivieren
+        * opt_fields (string): Kommagetrennte Liste optionaler Felder
+    * Liefert: Aktualisiertes Enum-Option-Objekt
+49. `asana_insert_enum_option`
+    * Ordnet eine bestehende Enum-Option neu — bewegt sie vor oder hinter eine andere Option.
+    * Pflichtparameter:
+        * custom_field_gid (string): GID des Custom Fields
+        * enum_option (string): GID der zu verschiebenden Option
+        * before_enum_option oder after_enum_option (string): GID der Referenz-Option
+    * Optionale Parameter:
+        * opt_fields (string): Kommagetrennte Liste optionaler Felder
+    * Liefert: Aktualisiertes Enum-Option-Objekt
+50. `asana_get_custom_field_settings_for_project`
+    * Listet alle Custom Fields auf, die einem Projekt zugeordnet sind, inklusive `is_important`-Flag.
+    * Pflichtparameter:
+        * project_gid (string): Projekt-GID
+    * Optionale Parameter:
+        * opt_fields (string): Kommagetrennte Liste optionaler Felder (z. B. `custom_field,custom_field.name,custom_field.resource_subtype,custom_field.enum_options,is_important`)
+    * Liefert: Array von Custom-Field-Setting-Objekten
+51. `asana_add_custom_field_setting_for_project`
+    * Ordnet ein bestehendes Custom Field einem Projekt zu. Optional als „wichtig" markieren (wird dann in der Projekt-Headerleiste angezeigt).
+    * Pflichtparameter:
+        * project_gid (string): Projekt-GID
+        * custom_field (string): GID des zuzuordnenden Custom Fields
+    * Optionale Parameter:
+        * is_important (boolean): Als wichtig markieren
+        * opt_fields (string): Kommagetrennte Liste optionaler Felder
+    * Liefert: Angelegtes Custom-Field-Setting-Objekt
+52. `asana_remove_custom_field_setting_for_project`
+    * **Destruktiv.** Entfernt die Zuordnung eines Custom Fields zu einem Projekt. Bestehende Werte auf Tasks im Projekt bleiben erhalten, das Feld ist dort aber nicht mehr editierbar. Erfordert `confirm: true`.
+    * Pflichtparameter:
+        * project_gid (string): Projekt-GID
+        * custom_field (string): GID des Custom Fields
+        * confirm (boolean): Muss `true` sein
+    * Liefert: `{ gid, resource_type }` des entfernten Settings
 
 ## Prompts
 
