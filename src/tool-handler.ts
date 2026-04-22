@@ -719,6 +719,63 @@ export function tool_handler(asanaClient: AsanaClientWrapper): (request: CallToo
           }
         }
 
+        // ===== Custom-Field-Definitionen =====
+
+        case "asana_list_custom_fields_for_workspace": {
+          const { workspace, ...opts } = args;
+          const response = await asanaClient.listCustomFieldsForWorkspace(workspace, opts);
+          return {
+            content: [{ type: "text", text: JSON.stringify(response) }],
+          };
+        }
+
+        case "asana_get_custom_field": {
+          const { custom_field_gid, ...opts } = args;
+          const response = await asanaClient.getCustomField(custom_field_gid, opts);
+          return {
+            content: [{ type: "text", text: JSON.stringify(response) }],
+          };
+        }
+
+        case "asana_create_custom_field": {
+          const { opt_fields, ...data } = args;
+          const allowed = ["text", "number", "enum", "multi_enum", "date", "people"];
+          if (!allowed.includes(data.resource_subtype)) {
+            throw new Error(
+              `resource_subtype must be one of: ${allowed.join(", ")}`
+            );
+          }
+          const response = await asanaClient.createCustomField(data, opt_fields ? { opt_fields } : {});
+          return {
+            content: [{ type: "text", text: JSON.stringify(response) }],
+          };
+        }
+
+        case "asana_update_custom_field": {
+          const { custom_field_gid, opt_fields, ...data } = args;
+          const response = await asanaClient.updateCustomField(
+            custom_field_gid,
+            data,
+            opt_fields ? { opt_fields } : {}
+          );
+          return {
+            content: [{ type: "text", text: JSON.stringify(response) }],
+          };
+        }
+
+        case "asana_delete_custom_field": {
+          const { custom_field_gid, confirm } = args;
+          if (confirm !== true) {
+            throw new Error(
+              "Destructive operation. Deleting a custom field removes it from ALL projects and tasks in the workspace. Re-invoke with confirm=true to proceed."
+            );
+          }
+          const response = await asanaClient.deleteCustomField(custom_field_gid);
+          return {
+            content: [{ type: "text", text: JSON.stringify(response) }],
+          };
+        }
+
         default:
           throw new Error(`Unknown tool: ${request.params.name}`);
       }
