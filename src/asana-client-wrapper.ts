@@ -503,4 +503,37 @@ export class AsanaClientWrapper {
     const response = await this.projects.updateProject(body, projectId, options);
     return response.data;
   }
+
+  // ===== Custom-Field-Definitions =====
+
+  async listCustomFieldsForWorkspace(workspace: string, opts: any = {}) {
+    // opts kann limit, offset, opt_fields enthalten — alle direkt an das SDK durchreichen
+    const response = await this.customFields.getCustomFieldsForWorkspace(workspace, opts);
+    return response.data;
+  }
+
+  async getCustomField(customFieldGid: string, opts: any = {}) {
+    const options = opts.opt_fields ? opts : {};
+    const response = await this.customFields.getCustomField(customFieldGid, options);
+    return response.data;
+  }
+
+  async createCustomField(data: any, opts: any = {}) {
+    const options = opts.opt_fields ? opts : {};
+    const body = { data };
+    const response = await this.customFields.createCustomField(body, options);
+    return response.data;
+  }
+
+  async updateCustomField(customFieldGid: string, data: any, opts: any = {}) {
+    const options = opts.opt_fields ? opts : {};
+    const body = { data };
+    const response = await this.customFields.updateCustomField(customFieldGid, { body, ...options });
+    return response.data;
+  }
+
+  async deleteCustomField(customFieldGid: string) {
+    const response = await this.customFields.deleteCustomField(customFieldGid);
+    return response.data;
+  }
 }
