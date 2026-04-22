@@ -10,7 +10,10 @@ import {
   getProjectSectionsTool,
   getTasksForProjectTool,
   createProjectTool,
-  updateProjectTool
+  updateProjectTool,
+  getCustomFieldSettingsForProjectTool,
+  addCustomFieldSettingForProjectTool,
+  removeCustomFieldSettingForProjectTool
 } from './tools/project-tools.js';
 import {
   createSectionTool,
@@ -57,6 +60,16 @@ import {
   getStoriesForTaskTool,
   createTaskStoryTool
 } from './tools/story-tools.js';
+import {
+  listCustomFieldsForWorkspaceTool,
+  getCustomFieldTool,
+  createCustomFieldTool,
+  updateCustomFieldTool,
+  deleteCustomFieldTool,
+  createEnumOptionTool,
+  updateEnumOptionTool,
+  insertEnumOptionTool
+} from './tools/custom-field-tools.js';
 
 // List of all available tools
 const all_tools: Tool[] = [
@@ -101,6 +114,19 @@ const all_tools: Tool[] = [
   deleteSectionTool,
   addTaskToSectionTool,
   updateProjectTool,
+  // Custom-Field-Definitionen
+  listCustomFieldsForWorkspaceTool,
+  getCustomFieldTool,
+  createCustomFieldTool,
+  updateCustomFieldTool,
+  deleteCustomFieldTool,
+  createEnumOptionTool,
+  updateEnumOptionTool,
+  insertEnumOptionTool,
+  // Custom-Field ↔ Projekt
+  getCustomFieldSettingsForProjectTool,
+  addCustomFieldSettingForProjectTool,
+  removeCustomFieldSettingForProjectTool,
 ];
 
 // List of tools that only read Asana state
@@ -122,7 +148,10 @@ const READ_ONLY_TOOLS = [
   'asana_get_tags_for_task',
   'asana_get_tasks_for_tag',
   'asana_get_tags_for_workspace',
-  'asana_get_subtasks'
+  'asana_get_subtasks',
+  'asana_list_custom_fields_for_workspace',
+  'asana_get_custom_field',
+  'asana_get_custom_field_settings_for_project'
 ];
 
 // Filter tools based on READ_ONLY_MODE
