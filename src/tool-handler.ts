@@ -819,6 +819,44 @@ export function tool_handler(asanaClient: AsanaClientWrapper): (request: CallToo
           };
         }
 
+        // ===== Custom-Field ↔ Projekt =====
+
+        case "asana_get_custom_field_settings_for_project": {
+          const { project_gid, ...opts } = args;
+          const response = await asanaClient.getProjectCustomFieldSettings(project_gid, opts);
+          return {
+            content: [{ type: "text", text: JSON.stringify(response) }],
+          };
+        }
+
+        case "asana_add_custom_field_setting_for_project": {
+          const { project_gid, opt_fields, ...data } = args;
+          const response = await asanaClient.addCustomFieldSettingForProject(
+            project_gid,
+            data,
+            opt_fields ? { opt_fields } : {}
+          );
+          return {
+            content: [{ type: "text", text: JSON.stringify(response) }],
+          };
+        }
+
+        case "asana_remove_custom_field_setting_for_project": {
+          const { project_gid, custom_field, confirm } = args;
+          if (confirm !== true) {
+            throw new Error(
+              "Destructive operation. Removing a custom field setting from a project detaches the field. Re-invoke with confirm=true to proceed."
+            );
+          }
+          const response = await asanaClient.removeCustomFieldSettingForProject(
+            project_gid,
+            { custom_field }
+          );
+          return {
+            content: [{ type: "text", text: JSON.stringify(response) }],
+          };
+        }
+
         default:
           throw new Error(`Unknown tool: ${request.params.name}`);
       }
