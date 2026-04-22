@@ -565,4 +565,26 @@ export class AsanaClientWrapper {
     );
     return response.data;
   }
+
+  // ===== Projekt-Settings (Feld ↔ Projekt) =====
+
+  async addCustomFieldSettingForProject(projectGid: string, data: any, opts: any = {}) {
+    const options = opts.opt_fields ? opts : {};
+    const body = { data };
+    const response = await this.projects.addCustomFieldSettingForProject(
+      body,
+      projectGid,
+      options
+    );
+    return response.data;
+  }
+
+  async removeCustomFieldSettingForProject(projectGid: string, data: any) {
+    const body = { data };
+    const response = await this.projects.removeCustomFieldSettingForProject(
+      body,
+      projectGid
+    );
+    return response.data;
+  }
 }
