@@ -50,7 +50,7 @@ export const getCustomFieldTool: Tool = {
 
 export const createCustomFieldTool: Tool = {
   name: "asana_create_custom_field",
-  description: "Create a new custom field definition in a workspace. Note: resource_subtype cannot be changed after creation. Formula fields cannot be created via API (only in the Asana web UI).",
+  description: "Create a new custom field definition in a workspace. Fields created via API are workspace-global (the Asana API rejects is_global_to_workspace=false). Note: resource_subtype cannot be changed after creation. Formula fields cannot be created via API (only in the Asana web UI).",
   inputSchema: {
     type: "object",
     properties: {
@@ -91,10 +91,6 @@ export const createCustomFieldTool: Tool = {
           },
           required: ["name"]
         }
-      },
-      is_global_to_workspace: {
-        type: "boolean",
-        description: "If true, the field is visible workspace-wide (requires admin permissions). Default: false."
       },
       opt_fields: {
         type: "string",

@@ -406,7 +406,7 @@ Ein weiteres Beispiel:
         * opt_fields (string): Zusätzliche Felder, etwa `enum_options,enum_options.name,enum_options.color,enum_options.enabled,is_formula_field,representation_type,precision,format`
     * Liefert: Custom-Field-Objekt
 44. `asana_create_custom_field`
-    * Legt ein neues Custom Field in einem Workspace an. Hinweis: `resource_subtype` kann nachträglich nicht geändert werden. Formel-Felder sind nur über die Asana-Web-Oberfläche erstellbar, nicht per API.
+    * Legt ein neues Custom Field in einem Workspace an. Per API erzeugte Felder sind workspace-global — die Asana-API lehnt `is_global_to_workspace: false` ab, projekt-spezifische Felder müssen über die Asana-Web-Oberfläche angelegt werden. Hinweis: `resource_subtype` kann nachträglich nicht geändert werden. Formel-Felder sind nur über die Asana-Web-Oberfläche erstellbar, nicht per API.
     * Pflichtparameter:
         * workspace (string): Workspace-GID
         * name (string): Feldname (muss im Workspace eindeutig sein)
@@ -416,7 +416,6 @@ Ein weiteres Beispiel:
         * precision (integer): Dezimalstellen 0–6 (nur für `number`)
         * format (string): Zahlenformat, nur für `number`: `currency`, `percentage`, `duration`, `custom`, `none`
         * enum_options (array): Anfangs-Optionen für Enum-Felder, Elemente `{ name, color?, enabled? }`
-        * is_global_to_workspace (boolean): Im gesamten Workspace verfügbar (Default `false`, erfordert Admin-Rechte)
         * opt_fields (string): Kommagetrennte Liste optionaler Felder
     * Liefert: Angelegtes Custom-Field-Objekt
 45. `asana_update_custom_field`

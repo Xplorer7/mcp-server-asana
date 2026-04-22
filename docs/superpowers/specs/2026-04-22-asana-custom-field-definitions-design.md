@@ -72,8 +72,11 @@ Test-Framework.
 - `format` (string, optional) — `currency`, `percentage`, `custom` usw.
 - `enum_options` (array, optional) — für `enum`/`multi_enum`, Elemente:
   `{ name: string, color?: string, enabled?: boolean }`
-- `is_global_to_workspace` (boolean, optional, default `false`) — siehe
-  "Test-Constraints" unten
+
+**Nicht exponiert:** `is_global_to_workspace` wird nicht als Tool-Parameter
+angeboten. Die Asana-API lehnt den Wert `false` mit 400 Bad Request ab und
+ignoriert `true` (legt jedes Feld als workspace-global an). Für
+projekt-spezifische Felder bleibt nur die Asana-Web-UI.
 
 ### `asana_update_custom_field`
 - `custom_field_gid` (string, required)
@@ -191,7 +194,8 @@ Namenskollisionen oder ungültigen Enum-Farben.
 - `resource_subtype` kann nach Erstellung nicht geändert werden
 - Enum-Optionen werden nicht gelöscht, nur über `enabled: false` deaktiviert
   (siehe "Offene Punkte")
-- Globale Felder (`is_global_to_workspace: true`) erfordern Workspace-Admin
+- Per API erzeugte Felder sind workspace-global (`is_global_to_workspace: true`)
+  — `false` wird von der API abgelehnt
 - Gesperrte Felder sind nur vom sperrenden User änderbar
 
 Kein neues Retry-/Rate-Limit-Handling — nichts davon existiert in der
@@ -219,8 +223,10 @@ Tests folgende Einschränkungen:
   `asana_add_custom_field_setting_for_project`- und
   `asana_remove_custom_field_setting_for_project`-Aufrufe nutzen ausschließlich
   dieses Projekt.
-- **Keine unternehmensweiten Felder:** `is_global_to_workspace` muss in allen
-  Test-Payloads `false` sein oder weggelassen werden.
+- **Globales Flag:** Die Asana-API lehnt `is_global_to_workspace: false` ab
+  (400 Bad Request). Per API angelegte Test-Felder sind daher zwangsläufig
+  workspace-global sichtbar, solange sie existieren. Das macht
+  Cleanup-Disziplin zur zweiten Schutzschicht.
 - **Keine Änderung bestehender Felder:** Test-Felder haben einen erkennbaren
   Namens-Präfix (z.B. `MCP-Test-`), damit sie von produktiven Feldern
   unterscheidbar sind.
@@ -240,12 +246,11 @@ source scripts/test-mcp.sh
 export WORKSPACE_GID=...       # Workspace-GID einmalig ermitteln
 export PROJ_GID=...            # GID des Projekts "Claude/API Test-Projekt"
 
-# 1) Enum-Feld anlegen (NICHT global)
+# 1) Enum-Feld anlegen (wird workspace-global — s. Test-Constraints)
 mcp_call asana_create_custom_field '{
   "workspace":"'$WORKSPACE_GID'",
   "name":"MCP-Test-Prio",
   "resource_subtype":"enum",
-  "is_global_to_workspace":false,
   "enum_options":[
     {"name":"Hoch","color":"red"},
     {"name":"Niedrig","color":"green"}
