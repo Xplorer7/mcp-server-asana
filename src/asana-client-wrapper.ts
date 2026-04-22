@@ -536,4 +536,33 @@ export class AsanaClientWrapper {
     const response = await this.customFields.deleteCustomField(customFieldGid);
     return response.data;
   }
+
+  // ===== Enum-Optionen =====
+
+  async createEnumOption(customFieldGid: string, data: any, opts: any = {}) {
+    const options = opts.opt_fields ? opts : {};
+    const response = await this.customFields.createEnumOptionForCustomField(
+      customFieldGid,
+      { body: { data }, ...options }
+    );
+    return response.data;
+  }
+
+  async updateEnumOption(enumOptionGid: string, data: any, opts: any = {}) {
+    const options = opts.opt_fields ? opts : {};
+    const response = await this.customFields.updateEnumOption(
+      enumOptionGid,
+      { body: { data }, ...options }
+    );
+    return response.data;
+  }
+
+  async insertEnumOption(customFieldGid: string, data: any, opts: any = {}) {
+    const options = opts.opt_fields ? opts : {};
+    const response = await this.customFields.insertEnumOptionForCustomField(
+      customFieldGid,
+      { body: { data }, ...options }
+    );
+    return response.data;
+  }
 }
